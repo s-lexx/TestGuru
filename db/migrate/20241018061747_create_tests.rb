@@ -4,12 +4,12 @@ class CreateTests < ActiveRecord::Migration[6.1]
       t.string :title, null: false
       t.integer :level, null: false
       t.integer :category_id, null: false
-      t.string :author, null: false
+      t.string :test_author, null: false
 
       t.timestamps
     end
 
-    change_column_default :tests, :level, 1
-
+    change_column_default :tests, :level, from: nil, to: 1
+    add_foreign_key :tests, :categories
   end
 end

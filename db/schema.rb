@@ -15,6 +15,13 @@ ActiveRecord::Schema.define(version: 2024_10_19_105700) do
   create_table "answers", force: :cascade do |t|
     t.string "body", null: false
     t.integer "question_id", null: false
+    t.boolean "correct", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "title", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -30,7 +37,7 @@ ActiveRecord::Schema.define(version: 2024_10_19_105700) do
     t.string "title", null: false
     t.integer "level", default: 1, null: false
     t.integer "category_id", null: false
-    t.string "author", null: false
+    t.string "test_author", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -43,4 +50,5 @@ ActiveRecord::Schema.define(version: 2024_10_19_105700) do
 
   add_foreign_key "answers", "questions"
   add_foreign_key "questions", "tests"
+  add_foreign_key "tests", "categories"
 end
