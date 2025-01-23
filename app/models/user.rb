@@ -1,8 +1,8 @@
 class User < ApplicationRecord
-  def find_by_level(level)
+  def find_users_tests_by_difficulty_level(difficulty_level)
     Test
       .joins("JOIN results ON tests.id = results.test_id")
       .where(results: { user_id: id })
-      .where(level: level)
+      .where(level: difficulty_level)
   end
 end
