@@ -5,43 +5,52 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
 # Categories
-Category.create([
-                  { title: 'Frontend' },
-                  { title: 'Backend' }
-                ]) if Category.all.count.nil?
+frontend = Category.find_or_create_by(title: 'Frontend')
+backend = Category.find_or_create_by(title: 'Backend')
+
 # Users
-User.create([
-              { name: 'User1' },
-              { name: 'User2' }
-            ]) if User.all.count.nil?
+john = User.find_or_create_by(name: 'John')
+james = User.find_or_create_by(name: 'James')
+
 # Tests
-Test.create([
-              { title: 'HTML', category_id: 1, author_id: 1 },
-              { title: 'CSS', level: 1, category_id: 1, author_id: 2 },
-              { title: 'Ruby', level: 2, category_id: 2, author_id: 1 }
-            ]) if Test.all.count.nil?
+html = Test.find_or_create_by(title: 'HTML', category_id: frontend.id, author_id: john.id)
+css = Test.find_or_create_by(title: 'CSS', level: 1, category_id: frontend.id, author_id: james.id)
+ruby = Test.find_or_create_by(title: 'Ruby', level: 2, category_id: backend.id, author_id: john.id)
+
 # Questions
-Question.create([
-                  { body: "Какие основные теги используются в HTML?", test_id: 1 },
-                  { body: "Как вставить изображение на веб-страницу с помощью HTML?", test_id: 1 },
-                  { body: "Как изменить цвет текста с помощью свойств CSS?", test_id: 2 },
-                  { body: "Как использовать медиазапросы в CSS для создания адаптивного дизайна?", test_id: 2 },
-                  { body: "Какие типы данных существуют в Ruby?", test_id: 3 },
-                  { body: "Как работают условные конструкции в Ruby и какие виды ветвлений существуют?", test_id: 3 }
-                ]) if Question.all.count.nil?
+[
+ { body: "Какие основные теги используются в HTML?", test_id: html.id },
+ { body: "Как вставить изображение на веб-страницу с помощью HTML?", test_id: html.id },
+ { body: "Как изменить цвет текста с помощью свойств CSS?", test_id: css.id },
+ { body: "Как использовать медиазапросы в CSS для создания адаптивного дизайна?", test_id: css.id },
+ { body: "Какие типы данных существуют в Ruby?", test_id: ruby.id },
+ { body: "Как работают условные конструкции в Ruby и какие виды ветвлений существуют?", test_id: ruby.id }
+].each { |question| Question.find_or_create_by(question) }
+
+
 # Answers
-Answer.create([
-                { body: "Правильный ответ по HTML?", question_id: 1, correct: true },
-                { body: "Неправильный ответ по HTML?", question_id: 2 },
-                { body: "Правильный ответ по CSS?", question_id: 3, correct: true },
-                { body: "Неправильный ответ по CSS?", question_id: 4 },
-                { body: "Правильный ответ по Ruby?", question_id: 5, correct: true },
-                { body: "Неправильный ответ по Ruby", question_id: 6 },
-              ]) if Answer.all.count.nil?
+[html,css,ruby].each do |test|
+
+  Question.where(test_id: test.id).each_with_index do |question, index|
+
+    ['Правильный', 'Неправильный', 'Другой неправильный'].each do |answer|
+      Answer.find_or_create_by({ body: "#{answer} ответ по #{test.title} - #{index + 1}", question_id: question.id })
+    end
+
+  end
+
+end
+
+Answer.where("body LIKE ?", "Правильный%").update_all(correct: true)
+
 # Results
-Result.create([
-                { status: "Пройден", user_id: 2, test_id: 1 },
-                { status: "Пройден", user_id: 1, test_id: 2 },
-                { status: "Не завершен", user_id: 2, test_id: 3 },
-              ]) if Result.all.count.nil?
+[
+ { status: "Пройден", user_id: james.id, test_id: html.id },
+ { status: "Пройден", user_id: john.id, test_id: css.id },
+ { status: "Не завершен", user_id: james.id, test_id: ruby.id }
+].each { |result| Result.find_or_create_by(result) }
+
+
+
