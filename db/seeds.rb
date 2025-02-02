@@ -51,6 +51,3 @@ Answer.where("body LIKE ?", "Правильный%").update_all(correct: true)
  { status: "Пройден", user_id: john.id, test_id: css.id },
  { status: "Не завершен", user_id: james.id, test_id: ruby.id }
 ].each { |result| Result.find_or_create_by(result) }
-
-
-
