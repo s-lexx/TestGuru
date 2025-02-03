@@ -9,4 +9,4 @@ Real World objects(entity):
 * Question
 * Answer
 * Categories
-* Statistic
+* Results
